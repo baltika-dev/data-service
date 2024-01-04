@@ -3,6 +3,7 @@ package com.baltika.dataservice.utils;
 import com.baltika.dataservice.model.db.Ally;
 import com.baltika.dataservice.model.db.User;
 import com.baltika.dataservice.model.request.CreateUserRequest;
+import com.baltika.dataservice.model.request.PatchUserRequest;
 import com.baltika.dataservice.model.response.UserResponse;
 
 import java.time.OffsetDateTime;

@@ -27,7 +27,7 @@ import java.util.UUID;
 public class User {
     @Id
     @Column(name = "id")
-    private UUID id = UUID.randomUUID();
+    private UUID id;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user", targetEntity = Ally.class)
     private List<Ally> alias;
@@ -45,5 +45,8 @@ public class User {
     private OffsetDateTime birthday;
 
     @Column(name = "created_at")
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    private OffsetDateTime createdAt;
+
+    @Column(name = "modified_at")
+    private OffsetDateTime modifiedAt;
 }

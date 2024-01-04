@@ -1,8 +1,10 @@
 package com.baltika.dataservice.service;
 
+import com.baltika.dataservice.exceptions.PatchUserException;
 import com.baltika.dataservice.model.db.Ally;
 import com.baltika.dataservice.model.db.User;
 import com.baltika.dataservice.model.request.CreateUserRequest;
+import com.baltika.dataservice.model.request.PatchUserRequest;
 import com.baltika.dataservice.model.response.UserResponse;
 import com.baltika.dataservice.repository.AliasRepository;
 import com.baltika.dataservice.repository.UserRepository;
@@ -63,6 +65,7 @@ public class UserService {
     public ResponseEntity<UserResponse> createUser(CreateUserRequest createUserRequest) {
         User user = Converters.mapUserRequestToUser(createUserRequest);
         user.setCreatedAt(OffsetDateTime.now());
+        user.setModifiedAt(OffsetDateTime.now());
         user.setId(UUID.randomUUID());
         user = userRepository.saveAndFlush(user);
 
@@ -72,6 +75,38 @@ public class UserService {
                 .build();
         ally = aliasRepository.saveAndFlush(ally);
         user.setAlias(Collections.singletonList(ally));
+        UserResponse userResponse = Converters.mapUserToUserResponse(user);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @Transactional
+    public ResponseEntity<UserResponse> updateUser(PatchUserRequest patchUserRequest) {
+        if (patchUserRequest.id() == null) {
+            throw new PatchUserException("Id is not provided");
+        }
+
+        User user = userRepository.findById(patchUserRequest.id())
+                .orElseThrow(() -> new PatchUserException("No suer with such Id"));
+
+        user.setBirthday(OffsetDateTime.parse(patchUserRequest.birthday()));
+        user.setModifiedAt(OffsetDateTime.now());
+        user.setFirstname(patchUserRequest.firstname());
+        user.setLastname(patchUserRequest.lastname());
+        user.setMiddlename(patchUserRequest.middlename());
+
+        user = userRepository.saveAndFlush(user);
+        UserResponse userResponse = Converters.mapUserToUserResponse(user);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @Transactional
+    public ResponseEntity<UserResponse> deleteUser(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new PatchUserException("No suer with such Id"));
+
+        userRepository.delete(user);
         UserResponse userResponse = Converters.mapUserToUserResponse(user);
 
         return ResponseEntity.ok(userResponse);

@@ -1,12 +1,15 @@
 package com.baltika.dataservice.controller.v1;
 
 import com.baltika.dataservice.model.request.CreateUserRequest;
+import com.baltika.dataservice.model.request.PatchUserRequest;
 import com.baltika.dataservice.model.response.UserResponse;
 import com.baltika.dataservice.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,5 +48,15 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
         return userService.createUser(createUserRequest);
+    }
+
+    @PatchMapping
+    public ResponseEntity<UserResponse> updateUser(@RequestBody PatchUserRequest patchUserRequest) {
+        return userService.updateUser(patchUserRequest);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<UserResponse> updateUser(@RequestParam UUID id) {
+        return userService.deleteUser(id);
     }
 }
